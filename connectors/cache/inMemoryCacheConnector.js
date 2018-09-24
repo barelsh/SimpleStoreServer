@@ -12,7 +12,7 @@ class inMemoryCacheConnector extends cacheConnector{
             key = JSON.stringify(key);
         }
         if (typeof key != 'string') {
-            throw new Error("Invalid key type");
+            throw Error("Invalid key type");
         }
 
         this.store[key] = val;
@@ -23,4 +23,4 @@ class inMemoryCacheConnector extends cacheConnector{
     }
 }
 
-module.exports = inMemoryCacheConnector
+module.exports = inMemoryCacheConnector;
