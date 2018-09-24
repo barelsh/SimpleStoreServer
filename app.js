@@ -1,10 +1,21 @@
 var express = require('express');
 var logger = require('morgan');
 
-var cacheConnector = require('./connectors/cache/inMemoryCacheConnector');
+var redisCacheConnector = require('./connectors/cache/redisCacheConnector');
+var inMemoryCacheConnector = require('./connectors/cache/inMemoryCacheConnector');
+
+var cacheConnector;
+switch (process.env.CACHE_TYPE) {
+    case 'REDIS':
+        cacheConnector = new redisCacheConnector(process.env.CACHE_CONNECTION);
+        break;
+    case 'IN_MEMORY':
+    default:
+        cacheConnector = new inMemoryCacheConnector();
+}
 
 var indexRouter = require('./routes/index');
-var storeRouter = require('./routes/store')(new cacheConnector());
+var storeRouter = require('./routes/store')(cacheConnector);
 
 
 var app = express();
