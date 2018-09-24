@@ -1,15 +1,32 @@
 var express = require('express');
 var router = express.Router();
 
-var store = null;
+var init = (cacheConnector) => {
+    router.get('/resource', async function(req, res, next) {
+        try {
+            let resource = await cacheConnector.getEntity('resource')
+            res.json(resource);
+        }
+        catch(e) {
+            console.error(e);
+            res.status(500).end();
+        }
+    });
 
-router.get('/resource', function(req, res, next) {
-    res.send(store);
-});
+    router.post('/resource', async function(req, res, next) {
+        let resource = {...req.body}
+        try {
+            await cacheConnector.addEntity('resource', resource)
+        }
+        catch(e) {
+            console.error(e);
+            res.status(500).end();
+        }
 
-router.post('/resource', function(req, res, next) {
-    store = {...req.body}
-    res.end();
-});
+        res.end();
+    });
 
-module.exports = router;
+    return router;
+};
+
+module.exports = init;

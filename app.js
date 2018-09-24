@@ -1,8 +1,11 @@
 var express = require('express');
 var logger = require('morgan');
 
+var cacheConnector = require('./connectors/cache/inMemoryCacheConnector');
+
 var indexRouter = require('./routes/index');
-var storeRouter = require('./routes/store');
+var storeRouter = require('./routes/store')(new cacheConnector());
+
 
 var app = express();
 
